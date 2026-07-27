@@ -1,0 +1,144 @@
+# Payment
+
+Payments as part of e-commerce are an important part. This section is about payment for goods.
+
+## User Model
+
+Add the `CanPay` trait and `Customer` interface to your User model.
+
+> The trait `CanPay` already inherits `HasWallet`, reuse will cause an error.
+
+```php
+use Bavix\Wallet\Traits\CanPay;
+use Bavix\Wallet\Interfaces\Customer;
+
+class User extends Model implements Customer
+{
+    use CanPay;
+}
+```
+
+## Item Model
+
+Add the `HasWallet` trait and interface to `Item` model.
+
+Since v9.0.0, there are two product interfaces:
+- For an unlimited number of products (`ProductInterface`);
+- For a limited number of products (`ProductLimitedInterface`);
+
+An example with an unlimited number of products:
+```php
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Customer;
+use Bavix\Wallet\Interfaces\ProductInterface;
+
+class Item extends Model implements ProductInterface
+{
+    use HasWallet;
+
+    public function getAmountProduct(Customer $customer): int|string
+    {
+        return 100;
+    }
+
+    public function getMetaProduct(): ?array
+    {
+        return [
+            'title' => $this->title, 
+            'description' => 'Purchase of Product #' . $this->id,
+        ];
+    }
+}
+```
+
+Example with a limited number of products:
+```php
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Customer;
+use Bavix\Wallet\Interfaces\ProductLimitedInterface;
+use Bavix\Wallet\External\Api\PurchaseQuery;
+use Bavix\Wallet\External\Api\PurchaseQueryHandlerInterface;
+
+class Item extends Model implements ProductLimitedInterface
+{
+    use HasWallet;
+
+    public function canBuy(Customer $customer, int $quantity = 1, bool $force = false): bool
+    {
+        /**
+         * This is where you implement the constraint logic. 
+         * 
+         * If the service can be purchased once, then
+         *  return ! app(PurchaseQueryHandlerInterface::class)->one(PurchaseQuery::create($customer, $this));
+         */
+        return true; 
+    }
+    
+    public function getAmountProduct(Customer $customer): int|string
+    {
+        return 100;
+    }
+
+    public function getMetaProduct(): ?array
+    {
+        return [
+            'title' => $this->title, 
+            'description' => 'Purchase of Product #' . $this->id,
+        ];
+    }
+}
+```
+
+I do not recommend using the limited interface when working with a shopping cart.
+For shopping cart checks, use `PurchaseQuery` + `PurchaseQueryHandlerInterface` as the primary API.
+`PurchaseServiceInterface` remains available as a legacy extension point until v14.
+
+## Proceed to purchase
+
+Find the user and check the balance.
+
+```php
+$user = User::first();
+$user->balance; // 100
+```
+
+Find the goods and check the cost.
+
+```php
+$item = Item::first();
+$item->getAmountProduct($user); // 100
+```
+
+The user can buy a product, buy...
+
+```php
+$user->pay($item);
+$user->balance; // 0
+```
+
+What happens if the user does not have the funds?
+The same as with the [withdrawal](../single/withdraw#failed).
+
+```php
+$user->balance; // 0
+$user->pay($item);
+// throw an exception
+```
+
+The question arises, how do you know that the product is purchased?
+
+```php
+(bool) app(PurchaseQueryHandlerInterface::class)->one(PurchaseQuery::create($user, $item)); // bool(true)
+```
+
+## Safe Pay
+
+To not write `try` and `catch` use `safePay` method.
+
+```php
+if ($user->safePay($item)) {
+  // try to buy again )
+}
+```
+
+It's simple!

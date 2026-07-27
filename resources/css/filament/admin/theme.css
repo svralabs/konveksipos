@@ -1,0 +1,1166 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/vendor/**/*';
+
+/* ================================================================
+   KONVEKSIPOS — Donezo Modern Soft UI Theme
+   Design System:
+     - Background:  #f8fafc (slate-50)
+     - Cards:       #ffffff, border #e2e8f0, radius 1.25rem
+     - Primary:     #065f46 (teal-700)
+     - Text:        #1e293b (slate-800)
+     - Muted:       #64748b (slate-500)
+================================================================ */
+
+/* ----------------------------------------------------------------
+   BASE
+---------------------------------------------------------------- */
+body {
+    background-color: #f8fafc !important;
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* ================================================================
+   COLOR SYSTEM — Override Filament's CSS variables to force Teal theme
+   Filament renders interactive colors (focus, active, hover, buttons,
+   checkboxes, toggles, tabs) via these custom properties.
+================================================================ */
+:root,
+.fi-body {
+    /* Primary = Emerald — matches dashboard-custom.blade.php (bg-emerald-800 etc) */
+    --color-primary-50:  #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary-950: #022c22;
+
+    /* Filament v3/v5 uses --c-{shade} — must match primary */
+    --c-50:  #ecfdf5;
+    --c-100: #d1fae5;
+    --c-200: #a7f3d0;
+    --c-300: #6ee7b7;
+    --c-400: #34d399;
+    --c-500: #10b981;
+    --c-600: #059669;
+    --c-700: #047857;
+    --c-800: #065f46;
+    --c-900: #064e3b;
+    --c-950: #022c22;
+}
+
+/* ================================================================
+   1. SIDEBAR — Floating Card
+================================================================ */
+.fi-sidebar {
+    background-color: #ffffff !important;
+    border-radius: 1.5rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06) !important;
+    height: calc(100vh - 2.5rem) !important;
+    z-index: 30 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* ----------------------------------------------------------------
+   LAYOUT: Sidebar Positioning & Content Gap
+   - sidebar uses `sticky` when open → margin-left shifts it in flex flow
+   - sidebar uses `fixed` when hidden → transform compensates for margin
+---------------------------------------------------------------- */
+@media (min-width: 1024px) {
+    .fi-sidebar {
+        top: 1.25rem !important;
+        margin-left: 1.25rem !important;
+    }
+
+    /* When HIDDEN: translateX(-100%) only covers width (320px).
+       We need calc(-100% - 1.25rem) to also cover the margin offset. */
+    .fi-sidebar:not(.fi-sidebar-open) {
+        transform: translateX(calc(-100% - 1.25rem)) !important;
+    }
+
+    /* Content wrapper: top/right/bottom padding for breathing room */
+    .fi-main-ctn {
+        padding-top: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        padding-bottom: 1.25rem !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    .fi-sidebar {
+        top: 0 !important;
+        left: 0 !important;
+    }
+    .fi-main-ctn {
+        padding: 1rem !important;
+    }
+}
+
+/* ----------------------------------------------------------------
+   SIDEBAR INTERNALS
+---------------------------------------------------------------- */
+.fi-sidebar-header {
+    display: flex !important;
+    align-items: center !important;
+    padding: 1.25rem 1.25rem 0.5rem !important;
+    flex-shrink: 0 !important;
+}
+
+.fi-sidebar-nav {
+    padding: 0.75rem 0.75rem 0.5rem !important;
+    flex-grow: 1 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar {
+    width: 4px !important;
+}
+.fi-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+.fi-sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0 !important;
+    border-radius: 9999px !important;
+}
+
+.fi-sidebar-nav-groups {
+    gap: 0.5rem !important;
+}
+
+.fi-sidebar-group {
+    gap: 0.125rem !important;
+}
+
+.fi-sidebar-group-header {
+    padding: 0.25rem 0.5rem !important;
+}
+
+.fi-sidebar-group-label {
+    font-size: 0.65rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important;
+}
+
+.dark .fi-sidebar-group-label {
+    color: #52525b !important;
+}
+
+/* Nav Items */
+.fi-sidebar-item-btn {
+    border-radius: 10px !important;
+    margin: 1px 0 !important;
+    padding: 7px 10px !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    transition: all 0.15s ease !important;
+    color: #475569 !important;
+}
+
+.fi-sidebar-item-btn:hover {
+    background-color: #f1f5f9 !important;
+    color: #065f46 !important;
+}
+
+.fi-sidebar-item-btn.fi-active {
+    background-color: #ecfdf5 !important;
+    color: #065f46 !important;
+    font-weight: 600 !important;
+}
+
+.fi-sidebar-item-icon {
+    width: 1rem !important;
+    height: 1rem !important;
+    color: #94a3b8 !important;
+}
+
+.fi-sidebar-item-btn:hover .fi-sidebar-item-icon,
+.fi-sidebar-item-btn.fi-active .fi-sidebar-item-icon {
+    color: #065f46 !important;
+}
+
+.fi-sidebar-item-label {
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+}
+
+.dark .fi-sidebar-item-btn { color: #94a3b8 !important; }
+.dark .fi-sidebar-item-btn:hover { background-color: #27272a !important; color: #34d399 !important; }
+.dark .fi-sidebar-item-btn.fi-active { background-color: #052e16 !important; color: #34d399 !important; }
+.dark .fi-sidebar-item-btn.fi-active .fi-sidebar-item-icon,
+.dark .fi-sidebar-item-btn:hover .fi-sidebar-item-icon { color: #34d399 !important; }
+
+/* Sidebar Footer */
+.fi-sidebar-footer {
+    flex-shrink: 0 !important;
+    background-color: #ffffff !important;
+    border-top: 1px solid #f1f5f9 !important;
+    padding: 0.625rem 1rem !important;
+    margin: 0 !important;
+}
+
+.dark .fi-sidebar-footer {
+    background-color: #18181b !important;
+    border-top-color: #27272a !important;
+}
+
+/* Global search in sidebar */
+.fi-sidebar input[type="search"],
+.fi-sidebar-global-search-input {
+    height: 34px !important;
+    font-size: 0.8125rem !important;
+    border-radius: 10px !important;
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+.dark .fi-sidebar input[type="search"],
+.dark .fi-sidebar-global-search-input {
+    background-color: #18181b !important;
+    border-color: #3f3f46 !important;
+    color: #f8fafc !important;
+}
+
+/* ================================================================
+   2. SIDEBAR TOGGLE BUTTON
+================================================================ */
+.fi-layout-sidebar-toggle-btn-ctn {
+    position: fixed !important;
+    top: 1.5rem !important;
+    left: 1.5rem !important;
+    z-index: 25 !important;
+    padding: 0 !important;
+}
+
+.fi-layout-sidebar-toggle-btn {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+    border-radius: 9999px !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #64748b !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-layout-sidebar-toggle-btn:hover {
+    background-color: #ecfdf5 !important;
+    border-color: #6ee7b7 !important;
+    color: #065f46 !important;
+    transform: scale(1.05) !important;
+}
+
+.dark .fi-layout-sidebar-toggle-btn {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+}
+
+.dark .fi-layout-sidebar-toggle-btn:hover {
+    background-color: #27272a !important;
+    color: #34d399 !important;
+}
+
+@media (min-width: 1024px) {
+    .fi-layout-sidebar-toggle-btn-ctn {
+        position: fixed !important;
+        top: 1.5rem !important;
+        left: 1.5rem !important;
+        z-index: 40 !important;
+        transition: opacity 0.2s ease !important;
+    }
+    .fi-body-has-navigation .fi-layout:has(.fi-sidebar-open) .fi-layout-sidebar-toggle-btn-ctn {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
+
+/* ================================================================
+   3. MAIN CONTENT WRAPPER
+================================================================ */
+.fi-main-ctn {
+    background-color: #f8fafc !important;
+    transition: padding-inline-start 0.3s ease !important;
+}
+
+.fi-main {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.dark .fi-main-ctn,
+.dark body {
+    background-color: #09090b !important;
+}
+
+/* ================================================================
+   4. PAGE HEADER
+================================================================ */
+.fi-header {
+    padding-bottom: 1rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.dark .fi-header { border-bottom-color: #27272a !important; }
+
+.fi-header-heading {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em !important;
+    color: #0f172a !important;
+}
+
+.dark .fi-header-heading { color: #f8fafc !important; }
+
+.fi-header-subheading {
+    font-size: 0.8125rem !important;
+    color: #64748b !important;
+    margin-top: 0.25rem !important;
+    line-height: 1.5 !important;
+}
+
+.dark .fi-header-subheading { color: #71717a !important; }
+
+.fi-header-actions { gap: 0.5rem !important; }
+
+/* Breadcrumbs */
+.fi-breadcrumbs { font-size: 0.75rem !important; margin-bottom: 0.5rem !important; }
+.fi-breadcrumbs-item-label { color: #64748b !important; font-weight: 500 !important; }
+.fi-breadcrumbs-item-label:hover { color: #065f46 !important; }
+
+/* ================================================================
+   5. CARDS & SECTIONS
+================================================================ */
+.fi-section,
+.fi-card {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    overflow: hidden !important;
+}
+
+.dark .fi-section,
+.dark .fi-card {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+.fi-section-header {
+    padding: 1.25rem 1.5rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.dark .fi-section-header { border-bottom-color: #27272a !important; }
+
+.fi-section-header-heading {
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+
+.dark .fi-section-header-heading { color: #e2e8f0 !important; }
+
+.fi-section-content { padding: 1.5rem !important; }
+
+/* ================================================================
+   6. TABLES
+================================================================ */
+.fi-ta-ctn,
+.fi-ta-content {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    overflow: hidden !important;
+}
+
+.dark .fi-ta-ctn,
+.dark .fi-ta-content {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+.fi-ta-header-cell {
+    background-color: #f8fafc !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.dark .fi-ta-header-cell {
+    background-color: #1c1c1f !important;
+    color: #71717a !important;
+    border-bottom-color: #27272a !important;
+}
+
+.fi-ta-record {
+    border-bottom: 1px solid #f8fafc !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.dark .fi-ta-record { border-bottom-color: #27272a !important; }
+
+.fi-ta-record:hover { background-color: #f8fafc !important; }
+.dark .fi-ta-record:hover { background-color: #1c1c1f !important; }
+
+.fi-ta-cell {
+    padding: 11px 16px !important;
+    font-size: 0.875rem !important;
+    color: #374151 !important;
+}
+
+.dark .fi-ta-cell { color: #d1d5db !important; }
+
+/* Table empty state */
+.fi-ta-empty-state { padding: 3rem 1.5rem !important; text-align: center !important; }
+.fi-ta-empty-state-heading { font-size: 1rem !important; font-weight: 600 !important; color: #374151 !important; }
+.dark .fi-ta-empty-state-heading { color: #d1d5db !important; }
+
+/* Table search */
+.fi-ta-search-field input {
+    border-radius: 10px !important;
+    border-color: #e2e8f0 !important;
+    background-color: #f8fafc !important;
+    font-size: 0.875rem !important;
+}
+.fi-ta-search-field input:focus {
+    border-color: #065f46 !important;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12) !important;
+    background-color: #ffffff !important;
+}
+
+/* Pagination */
+.fi-pagination {
+    padding: 0.875rem 1.25rem !important;
+    border-top: 1px solid #f1f5f9 !important;
+}
+.dark .fi-pagination { border-top-color: #27272a !important; }
+
+.fi-pagination-item-btn {
+    border-radius: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: #475569 !important;
+    transition: all 0.15s ease !important;
+}
+.fi-pagination-item-btn:hover {
+    background-color: #f1f5f9 !important;
+    color: #065f46 !important;
+}
+.fi-pagination-item-btn[aria-current="page"] {
+    background-color: #065f46 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* ================================================================
+   7. BUTTONS
+================================================================ */
+/* ================================================================
+   BUTTONS — Filament v5 Class System
+   In Filament v5, buttons use: fi-color fi-color-{name} fi-bg-color-{shade}
+   NOT fi-btn-color-primary like Filament v3!
+   Debug confirmed: primary button = fi-color-primary fi-bg-color-400
+================================================================ */
+
+/* Base button shape — all buttons */
+.fi-btn {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem !important;
+    padding: 0.5rem 1.25rem !important;
+    transition: all 0.2s ease !important;
+}
+
+/* PRIMARY button: fi-color-primary fi-bg-color-400 → emerald-800 (match dashboard) */
+.fi-color-primary.fi-bg-color-400 {
+    background-color: #065f46 !important; /* emerald-800 — same as bg-emerald-800 in dashboard */
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3) !important;
+}
+
+/* PRIMARY hover: fi-bg-color-300 on hover */
+.fi-color-primary.fi-bg-color-400:hover {
+    background-color: #047857 !important; /* emerald-700 */
+    box-shadow: 0 6px 16px rgba(6, 95, 70, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Dark mode primary button */
+.dark .fi-color-primary.fi-bg-color-400 {
+    background-color: #047857 !important; /* emerald-700 in dark mode */
+}
+
+/* Legacy v3 class — keep for compatibility */
+.fi-btn-color-primary {
+    background-color: #065f46 !important;
+    color: #ffffff !important;
+    border-color: #065f46 !important;
+    box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3) !important;
+}
+.fi-btn-color-primary:hover {
+    background-color: #047857 !important;
+    box-shadow: 0 6px 16px rgba(6, 95, 70, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.fi-btn-color-gray {
+    background-color: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #374151 !important;
+}
+.fi-btn-color-gray:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.fi-btn-color-danger {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+}
+.fi-btn-color-danger:hover { background-color: #b91c1c !important; }
+
+.fi-btn-color-success {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+/* Table row action buttons */
+.fi-ac-btn-action {
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    padding: 0.375rem 0.75rem !important;
+    transition: all 0.15s ease !important;
+}
+
+/* Modal action buttons */
+.fi-modal-actions button {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+}
+
+/* ================================================================
+   8. FORM INPUTS
+================================================================ */
+.fi-input-wrp {
+    border-radius: 10px !important;
+    border-color: #e2e8f0 !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+    overflow: hidden !important;
+}
+.fi-input-wrp:focus-within {
+    border-color: #065f46 !important;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12) !important;
+}
+.dark .fi-input-wrp {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+}
+.dark .fi-input-wrp:focus-within {
+    border-color: #059669 !important;
+}
+
+.fi-fo-text-input,
+.fi-fo-select,
+.fi-fo-textarea {
+    border-radius: 10px !important;
+    border-color: #e2e8f0 !important;
+    background-color: #ffffff !important;
+    font-size: 0.875rem !important;
+    color: #1e293b !important;
+}
+.fi-fo-text-input:focus,
+.fi-fo-select:focus,
+.fi-fo-textarea:focus {
+    border-color: #065f46 !important;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12) !important;
+    outline: none !important;
+}
+.dark .fi-fo-text-input,
+.dark .fi-fo-select,
+.dark .fi-fo-textarea {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #e2e8f0 !important;
+}
+
+/* Form Labels */
+.fi-fo-field-wrp-label label {
+    font-size: 0.8125rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+.dark .fi-fo-field-wrp-label label { color: #d1d5db !important; }
+
+/* Helper text */
+.fi-fo-field-wrp-helper-text {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+    margin-top: 0.25rem !important;
+}
+
+/* Toggle / Switch */
+.fi-toggle-btn[aria-checked="true"] { background-color: #065f46 !important; }
+
+/* ================================================================
+   9. BADGES / STATUS PILLS
+================================================================ */
+.fi-badge {
+    border-radius: 9999px !important;
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    padding: 0.2rem 0.6rem !important;
+    letter-spacing: 0.02em !important;
+}
+.fi-badge-color-success { background-color: #dcfce7 !important; color: #15803d !important; }
+.fi-badge-color-danger  { background-color: #fee2e2 !important; color: #dc2626 !important; }
+.fi-badge-color-warning { background-color: #fef9c3 !important; color: #ca8a04 !important; }
+.fi-badge-color-info    { background-color: #dbeafe !important; color: #1d4ed8 !important; }
+.fi-badge-color-gray    { background-color: #f1f5f9 !important; color: #64748b !important; }
+.fi-badge-color-primary { background-color: #d1fae5 !important; color: #065f46 !important; }
+
+/* ================================================================
+   10. MODALS & DIALOGS
+================================================================ */
+.fi-modal-window {
+    background-color: #ffffff !important;
+    border-radius: 1.5rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+.dark .fi-modal-window {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+.fi-modal-header {
+    padding: 1.25rem 1.5rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+.dark .fi-modal-header { border-bottom-color: #27272a !important; }
+
+.fi-modal-heading {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+.dark .fi-modal-heading { color: #f8fafc !important; }
+
+.fi-modal-content { padding: 1.5rem !important; }
+
+.fi-modal-footer,
+.fi-modal-actions {
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid #f1f5f9 !important;
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: flex-end !important;
+}
+.dark .fi-modal-footer,
+.dark .fi-modal-actions { border-top-color: #27272a !important; }
+
+/* Modal backdrop blur */
+.fi-modal-close-overlay {
+    background-color: rgba(15, 23, 42, 0.4) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+/* ================================================================
+   11. DROPDOWN PANEL
+================================================================ */
+.fi-dropdown-panel {
+    background-color: #ffffff !important;
+    border-radius: 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    padding: 0.375rem !important;
+}
+.dark .fi-dropdown-panel {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+.fi-dropdown-list-item-label {
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+}
+.fi-dropdown-list-item-btn {
+    border-radius: 0.625rem !important;
+    padding: 0.5rem 0.75rem !important;
+    transition: background-color 0.15s ease !important;
+}
+.fi-dropdown-list-item-btn:hover { background-color: #f1f5f9 !important; }
+.dark .fi-dropdown-list-item-btn:hover { background-color: #27272a !important; }
+
+/* ================================================================
+   12. TABS
+================================================================ */
+.fi-tabs {
+    border-bottom: 2px solid #f1f5f9 !important;
+    margin-bottom: 1.5rem !important;
+    gap: 0.25rem !important;
+}
+.dark .fi-tabs { border-bottom-color: #27272a !important; }
+
+.fi-tabs-tab {
+    border-radius: 0 !important;
+    border-bottom: 2px solid transparent !important;
+    margin-bottom: -2px !important;
+    padding: 0.625rem 1rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    transition: all 0.15s ease !important;
+}
+.fi-tabs-tab:hover { color: #065f46 !important; background-color: transparent !important; }
+.fi-tabs-tab[aria-selected="true"] {
+    border-bottom-color: #065f46 !important;
+    color: #065f46 !important;
+    font-weight: 600 !important;
+    background-color: transparent !important;
+}
+
+/* ================================================================
+   13. NOTIFICATIONS
+================================================================ */
+.fi-no-notification {
+    border-radius: 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    padding: 1rem 1.25rem !important;
+}
+.fi-no-notification-title {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+.fi-no-notification-body {
+    font-size: 0.8125rem !important;
+    color: #64748b !important;
+    margin-top: 0.125rem !important;
+}
+
+/* ================================================================
+   14. STATS / KPI WIDGETS
+================================================================ */
+.fi-wi-stats-overview-stat {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    padding: 1.25rem !important;
+    transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+.fi-wi-stats-overview-stat:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-1px) !important;
+}
+.dark .fi-wi-stats-overview-stat {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+.fi-wi-stats-overview-stat-label {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #94a3b8 !important;
+}
+.fi-wi-stats-overview-stat-value {
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.2 !important;
+    margin-top: 0.25rem !important;
+}
+.dark .fi-wi-stats-overview-stat-value { color: #f8fafc !important; }
+
+/* ================================================================
+   15. DARK MODE — SIDEBAR
+================================================================ */
+.dark .fi-sidebar {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+/* ================================================================
+   16. MISC POLISH
+================================================================ */
+
+/* Focus ring */
+*:focus-visible {
+    outline-color: #065f46 !important;
+    outline-offset: 2px !important;
+}
+
+/* Dividers */
+.fi-fo-fieldset-divider {
+    border-color: #f1f5f9 !important;
+    margin: 1.25rem 0 !important;
+}
+.dark .fi-fo-fieldset-divider { border-color: #27272a !important; }
+
+/* Key-value display */
+.fi-in-entry-wrp {
+    padding: 0.875rem 1rem !important;
+    background-color: #f8fafc !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid #f1f5f9 !important;
+}
+.dark .fi-in-entry-wrp {
+    background-color: #1c1c1f !important;
+    border-color: #27272a !important;
+}
+.fi-in-entry-label {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #94a3b8 !important;
+    margin-bottom: 0.25rem !important;
+}
+.fi-in-entry-content {
+    font-size: 0.9375rem !important;
+    font-weight: 500 !important;
+    color: #1e293b !important;
+}
+.dark .fi-in-entry-content { color: #e2e8f0 !important; }
+
+/* ================================================================
+   RESOURCE PAGES — Index, Create, Edit, View
+   Covers: Master Data, Inventaris, Keuangan, Pengaturan, Shield
+================================================================ */
+
+/* ---- Page wrapper ---- */
+.fi-resource-pages,
+.fi-page {
+    background-color: transparent !important;
+}
+
+/* ---- Table toolbar (search + filters + actions) ---- */
+.fi-ta-header {
+    padding: 1rem 1.25rem !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    border-radius: 1.25rem 1.25rem 0 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    flex-wrap: wrap !important;
+}
+.dark .fi-ta-header {
+    background-color: #18181b !important;
+    border-bottom-color: #27272a !important;
+}
+
+/* Table toolbar actions (Create button area) */
+.fi-ta-header-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+}
+
+/* ---- Filter pills/indicators ---- */
+.fi-ta-filter-indicator {
+    background-color: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    color: #065f46 !important;
+    border-radius: 9999px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 0.25rem 0.75rem !important;
+}
+.dark .fi-ta-filter-indicator {
+    background-color: #052e16 !important;
+    border-color: #064e3b !important;
+    color: #6ee7b7 !important;
+}
+
+/* ---- Bulk action bar ---- */
+.fi-ta-bulk-actions {
+    background-color: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    border-radius: 0.875rem !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0.75rem 1.25rem !important;
+}
+.dark .fi-ta-bulk-actions {
+    background-color: #052e16 !important;
+    border-color: #064e3b !important;
+}
+
+/* ---- Action group dropdown trigger ---- */
+.fi-ac-group-action-trigger-btn {
+    border-radius: 9999px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+/* ---- Create/Edit Form page wrapper ---- */
+.fi-fo-component-ctn {
+    background-color: transparent !important;
+}
+
+/* Form grid layout */
+.fi-fo-grid {
+    gap: 1.25rem !important;
+}
+
+/* Fieldset / Repeater section card */
+.fi-fo-fieldset {
+    background-color: #f8fafc !important;
+    border-radius: 1rem !important;
+    border: 1px solid #f1f5f9 !important;
+    padding: 1.25rem !important;
+}
+.dark .fi-fo-fieldset {
+    background-color: #1c1c1f !important;
+    border-color: #27272a !important;
+}
+
+/* Repeater item */
+.fi-fo-repeater-item {
+    background-color: #ffffff !important;
+    border-radius: 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 1.25rem !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+}
+.dark .fi-fo-repeater-item {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+/* File upload area */
+.fi-fo-file-upload {
+    border-radius: 1rem !important;
+    border: 2px dashed #e2e8f0 !important;
+    background-color: #f8fafc !important;
+    transition: all 0.2s ease !important;
+}
+.fi-fo-file-upload:hover {
+    border-color: #6ee7b7 !important;
+    background-color: #ecfdf5 !important;
+}
+.dark .fi-fo-file-upload {
+    background-color: #1c1c1f !important;
+    border-color: #27272a !important;
+}
+
+/* Key-value field */
+.fi-fo-key-value {
+    border-radius: 0.875rem !important;
+    overflow: hidden !important;
+    border: 1px solid #e2e8f0 !important;
+}
+.dark .fi-fo-key-value { border-color: #27272a !important; }
+
+/* Select with search pill */
+.fi-fo-select-option-label {
+    font-size: 0.875rem !important;
+    color: #374151 !important;
+}
+
+/* ---- View page / Infolist ---- */
+.fi-infolist {
+    background-color: transparent !important;
+}
+
+.fi-in-section {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03) !important;
+    overflow: hidden !important;
+}
+.dark .fi-in-section {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+.fi-in-section-header {
+    padding: 1rem 1.5rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+.dark .fi-in-section-header { border-bottom-color: #27272a !important; }
+
+.fi-in-section-header-heading {
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+.dark .fi-in-section-header-heading { color: #e2e8f0 !important; }
+
+.fi-in-section-content {
+    padding: 1.25rem 1.5rem !important;
+}
+
+/* ---- Relation Manager (embedded tables) ---- */
+.fi-resource-relation-manager {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    overflow: hidden !important;
+    margin-top: 1.5rem !important;
+}
+.dark .fi-resource-relation-manager {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+/* ---- Shield / Permission matrix tables ---- */
+.fi-ta-cell input[type="checkbox"] {
+    accent-color: #065f46 !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    border-radius: 4px !important;
+}
+.fi-ta-cell input[type="checkbox"]:checked {
+    background-color: #065f46 !important;
+}
+
+/* ---- Keuangan / Financial Stats ---- */
+.fi-wi-chart {
+    background-color: #ffffff !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03) !important;
+    overflow: hidden !important;
+    padding: 1.25rem !important;
+}
+.dark .fi-wi-chart {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+}
+
+/* ---- Pengaturan / Settings ---- */
+.fi-page-settings .fi-section {
+    margin-bottom: 1.25rem !important;
+}
+
+/* ---- Table column text styling ---- */
+.fi-ta-col-label {
+    font-size: 0.8125rem !important;
+    color: #1e293b !important;
+}
+.dark .fi-ta-col-label { color: #e2e8f0 !important; }
+
+.fi-ta-col-desc {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+}
+
+/* Color badges matching Filament semantic colors → emerald system */
+.fi-badge-color-primary,
+[data-fi-badge-color="primary"] {
+    background-color: #ecfdf5 !important;
+    color: #065f46 !important;
+    border-color: #a7f3d0 !important;
+}
+.fi-badge-color-success,
+[data-fi-badge-color="success"] {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+    border-color: #bbf7d0 !important;
+}
+.fi-badge-color-warning,
+[data-fi-badge-color="warning"] {
+    background-color: #fef9c3 !important;
+    color: #a16207 !important;
+    border-color: #fde047 !important;
+}
+.fi-badge-color-danger,
+[data-fi-badge-color="danger"] {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+    border-color: #fca5a5 !important;
+}
+.fi-badge-color-gray,
+[data-fi-badge-color="gray"] {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border-color: #e2e8f0 !important;
+}
+.fi-badge-color-info,
+[data-fi-badge-color="info"] {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+    border-color: #bfdbfe !important;
+}
+
+/* ---- Empty state improvement ---- */
+.fi-ta-empty-state-icon {
+    color: #cbd5e1 !important;
+}
+.dark .fi-ta-empty-state-icon { color: #3f3f46 !important; }
+
+/* ---- Action icon buttons in rows ---- */
+.fi-ac-icon-btn {
+    border-radius: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.15s ease !important;
+    color: #94a3b8 !important;
+}
+.fi-ac-icon-btn:hover {
+    background-color: #f1f5f9 !important;
+    color: #065f46 !important;
+}
+.dark .fi-ac-icon-btn:hover {
+    background-color: #27272a !important;
+    color: #6ee7b7 !important;
+}
+
+/* ---- Select input (native & Filament custom) ---- */
+.choices__inner,
+.fi-input {
+    border-radius: 10px !important;
+    border-color: #e2e8f0 !important;
+    font-size: 0.875rem !important;
+    background-color: #ffffff !important;
+}
+.dark .fi-input {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #e2e8f0 !important;
+}

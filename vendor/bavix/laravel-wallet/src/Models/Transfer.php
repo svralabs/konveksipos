@@ -1,0 +1,139 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Bavix\Wallet\Models;
+
+use Bavix\Wallet\Enums\TransferStatus;
+use Bavix\Wallet\Internal\Observers\TransferObserver;
+use function config;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
+
+/**
+ * Class Transfer.
+ *
+ * @property TransferStatus $status
+ * @property ?TransferStatus $status_last
+ * @property non-empty-string $discount
+ * @property int $deposit_id
+ * @property int $withdraw_id
+ * @property Wallet $from
+ * @property int $from_id
+ * @property Wallet $to
+ * @property int $to_id
+ * @property non-empty-string $uuid
+ * @property non-empty-string $fee
+ * @property ?array<mixed> $extra
+ * @property Transaction $deposit
+ * @property Transaction $withdraw
+ * @property DateTimeInterface $created_at
+ * @property DateTimeInterface $updated_at
+ * @property DateTimeInterface $deleted_at
+ *
+ * @method int getKey()
+ */
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'status',
+    'discount',
+    'deposit_id',
+    'withdraw_id',
+    'from_id',
+    'to_id',
+    'uuid',
+    'fee',
+    'extra',
+    'created_at',
+    'updated_at',
+])]
+#[ObservedBy(TransferObserver::class)]
+class Transfer extends Model
+{
+    use SoftDeletes;
+
+    #[Override]
+    public function getTable(): string
+    {
+        if ((string) $this->table === '') {
+            $this->table = config()
+                ->string('wallet.transfer.table', 'transfers');
+        }
+
+        return parent::getTable();
+    }
+
+    /**
+     * @return BelongsTo<Wallet, self>
+     */
+    public function from(): BelongsTo
+    {
+        /** @var class-string<Wallet> $model */
+        $model = config()
+            ->string('wallet.wallet.model', Wallet::class);
+        /** @var BelongsTo<Wallet, self> $belongsTo */
+        $belongsTo = $this->belongsTo($model, 'from_id');
+
+        return $belongsTo;
+    }
+
+    /**
+     * @return BelongsTo<Wallet, self>
+     */
+    public function to(): BelongsTo
+    {
+        /** @var class-string<Wallet> $model */
+        $model = config()
+            ->string('wallet.wallet.model', Wallet::class);
+        /** @var BelongsTo<Wallet, self> $belongsTo */
+        $belongsTo = $this->belongsTo($model, 'to_id');
+
+        return $belongsTo;
+    }
+
+    /**
+     * @return BelongsTo<Transaction, self>
+     */
+    public function deposit(): BelongsTo
+    {
+        /** @var class-string<Transaction> $model */
+        $model = config()
+            ->string('wallet.transaction.model', Transaction::class);
+        /** @var BelongsTo<Transaction, self> $belongsTo */
+        $belongsTo = $this->belongsTo($model, 'deposit_id');
+
+        return $belongsTo;
+    }
+
+    /**
+     * @return BelongsTo<Transaction, self>
+     */
+    public function withdraw(): BelongsTo
+    {
+        /** @var class-string<Transaction> $model */
+        $model = config()
+            ->string('wallet.transaction.model', Transaction::class);
+        /** @var BelongsTo<Transaction, self> $belongsTo */
+        $belongsTo = $this->belongsTo($model, 'withdraw_id');
+
+        return $belongsTo;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'deposit_id' => 'int',
+            'withdraw_id' => 'int',
+            'extra' => 'json',
+            'status' => TransferStatus::class,
+            'status_last' => TransferStatus::class,
+        ];
+    }
+}
