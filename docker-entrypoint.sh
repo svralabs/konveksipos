@@ -1,17 +1,21 @@
 #!/bin/sh
 set -e
 
-# Clear and optimize config/routes/views
-php artisan optimize:clear
-php artisan package:discover --ansi || true
+# Ensure SQLite database exists
+mkdir -p /app/database
+touch /app/database/database.sqlite
+chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/database
+chmod -R 775 /app/storage /app/bootstrap/cache /app/database
 
-# Run database migrations for SQLite automatically
+# 1. Run migrations first so cache/sessions/tables exist
 php artisan migrate --force --graceful || true
 
-# Create storage symlink
+# 2. Link storage
 php artisan storage:link || true
 
-# Ensure permissions
-chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/database
+# 3. Cache configuration & routes for production speed
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
 
 exec "$@"
