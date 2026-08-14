@@ -51,7 +51,42 @@ class ActivityLogResource extends Resource
     {
         return $schema
             ->components([
-                //
+                \Filament\Schemas\Components\Section::make('Informasi Aktivitas')
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('created_at')
+                            ->label('Waktu')
+                            ->dateTime('d M Y H:i:s'),
+                        \Filament\Infolists\Components\TextEntry::make('causer.name')
+                            ->label('User / Pelaku')
+                            ->placeholder('Sistem / Otomatis'),
+                        \Filament\Infolists\Components\TextEntry::make('log_name')
+                            ->label('Modul')
+                            ->badge(),
+                        \Filament\Infolists\Components\TextEntry::make('description')
+                            ->label('Aktivitas / Deskripsi'),
+                        \Filament\Infolists\Components\TextEntry::make('subject_type')
+                            ->label('Tipe Target')
+                            ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : '-')
+                            ->placeholder('-'),
+                        \Filament\Infolists\Components\TextEntry::make('subject_id')
+                            ->label('ID Target')
+                            ->placeholder('-'),
+                    ])->columns(2),
+
+                \Filament\Schemas\Components\Section::make('Detail Data & Perubahan')
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('properties')
+                            ->label('Data Properties / Payload')
+                            ->formatStateUsing(function ($state): string {
+                                if (empty($state) || (is_array($state) && count($state) === 0)) {
+                                    return '-';
+                                }
+                                $json = json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                                return "<pre style='background: #18181b; color: #34d399; padding: 12px; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 12px; font-weight: 500;'>{$json}</pre>";
+                            })
+                            ->html()
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

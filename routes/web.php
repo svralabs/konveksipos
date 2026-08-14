@@ -5,7 +5,7 @@ use App\Models\Order;
 use App\Services\ReceiptPrinter;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -8,12 +8,14 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\User;
 use App\Livewire\GlobalHeader;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
 class DashboardCustom extends Page
 {
+    use HasPageShield;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
     protected static ?string $title = 'Dashboard';
     protected static ?string $navigationLabel = 'Dashboard';

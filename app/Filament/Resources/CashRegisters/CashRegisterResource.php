@@ -51,7 +51,7 @@ class CashRegisterResource extends Resource
     {
         return $schema
             ->components([
-                \Filament\Infolists\Components\Section::make('Informasi Shift')
+                \Filament\Schemas\Components\Section::make('Informasi Shift')
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('user.name')->label('Kasir'),
                         \Filament\Infolists\Components\TextEntry::make('status')
@@ -64,15 +64,18 @@ class CashRegisterResource extends Resource
                             ->money('IDR'),
                         \Filament\Infolists\Components\TextEntry::make('closing_amount')
                             ->label('Setoran Akhir')
-                            ->money('IDR'),
+                            ->money('IDR')
+                            ->placeholder('-'),
                         \Filament\Infolists\Components\TextEntry::make('opened_at')
                             ->label('Waktu Buka')
                             ->dateTime('d M Y H:i:s'),
                         \Filament\Infolists\Components\TextEntry::make('closed_at')
                             ->label('Waktu Tutup')
-                            ->dateTime('d M Y H:i:s'),
+                            ->dateTime('d M Y H:i:s')
+                            ->placeholder('Masih Buka'),
                         \Filament\Infolists\Components\TextEntry::make('notes')
                             ->label('Catatan')
+                            ->placeholder('-')
                             ->columnSpanFull(),
                     ])->columns(2),
             ]);

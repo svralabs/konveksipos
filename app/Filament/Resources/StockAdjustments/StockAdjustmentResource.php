@@ -138,7 +138,7 @@ class StockAdjustmentResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (StockAdjustment $record): bool => $record->status === 'pending')
+                    ->visible(fn (StockAdjustment $record): bool => $record->status === 'pending' && auth()->user()?->can('Update:StockAdjustment'))
                     ->action(function (StockAdjustment $record) {
                         \Illuminate\Support\Facades\DB::transaction(function () use ($record) {
                             $product = \App\Models\Product::where('id', $record->product_id)->lockForUpdate()->first();
@@ -188,7 +188,7 @@ class StockAdjustmentResource extends Resource
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn (StockAdjustment $record): bool => $record->status === 'pending')
+                    ->visible(fn (StockAdjustment $record): bool => $record->status === 'pending' && auth()->user()?->can('Update:StockAdjustment'))
                     ->action(function (StockAdjustment $record) {
                         $record->update(['status' => 'rejected']);
                         \Filament\Notifications\Notification::make()->title('Rejected')->success()->send();

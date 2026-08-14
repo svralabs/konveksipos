@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class StockInPage extends Page implements HasTable
 {
-    use InteractsWithTable;
+    use InteractsWithTable, HasPageShield;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-down-tray';
     protected static string|\UnitEnum|null $navigationGroup = 'Inventaris';

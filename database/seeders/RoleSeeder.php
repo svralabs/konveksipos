@@ -15,14 +15,57 @@ class RoleSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create roles
-        $superadmin = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
-        $kasir      = Role::firstOrCreate(['name' => 'kasir', 'guard_name' => 'web']);
-        $gudang     = Role::firstOrCreate(['name' => 'gudang', 'guard_name' => 'web']);
+        // Create standard roles
+        $superadmin  = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $kasir       = Role::firstOrCreate(['name' => 'kasir', 'guard_name' => 'web']);
+        $adminGudang = Role::firstOrCreate(['name' => 'admin_gudang', 'guard_name' => 'web']);
 
-        // Create or update superadmin user
+        // Give initial default permissions to Kasir role
+        $kasirPermissions = [
+            'View:PosKasir',
+            'ViewAny:Order',
+            'View:Order',
+            'Create:Order',
+            'ViewAny:CashRegister',
+            'View:CashRegister',
+            'ViewAny:Customer',
+            'View:Customer',
+            'Create:Customer',
+            'ViewAny:Product',
+            'View:Product',
+        ];
+
+        foreach ($kasirPermissions as $perm) {
+            $permissionModel = Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
+            $kasir->givePermissionTo($permissionModel);
+        }
+
+        // Give initial default permissions to Admin Gudang role
+        $gudangPermissions = [
+            'View:StockInPage',
+            'ViewAny:Product',
+            'View:Product',
+            'Create:Product',
+            'Update:Product',
+            'ViewAny:StockAdjustment',
+            'View:StockAdjustment',
+            'Create:StockAdjustment',
+            'ViewAny:Supplier',
+            'View:Supplier',
+            'ViewAny:Category',
+            'View:Category',
+            'ViewAny:Unit',
+            'View:Unit',
+        ];
+
+        foreach ($gudangPermissions as $perm) {
+            $permissionModel = Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
+            $adminGudang->givePermissionTo($permissionModel);
+        }
+
+        // Assign users
         $adminUser = User::firstOrCreate(
-            ['email' => 'admin@konveksipos.com'],
+            ['email' => 'superadmin@konveksipos.com'],
             [
                 'name'     => 'Super Admin',
                 'password' => Hash::make('password'),
@@ -30,7 +73,6 @@ class RoleSeeder extends Seeder
         );
         $adminUser->syncRoles([$superadmin]);
 
-        // Create sample kasir user
         $kasirUser = User::firstOrCreate(
             ['email' => 'kasir@konveksipos.com'],
             [
@@ -40,7 +82,6 @@ class RoleSeeder extends Seeder
         );
         $kasirUser->syncRoles([$kasir]);
 
-        // Create sample gudang user
         $gudangUser = User::firstOrCreate(
             ['email' => 'gudang@konveksipos.com'],
             [
@@ -48,11 +89,8 @@ class RoleSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]
         );
-        $gudangUser->syncRoles([$gudang]);
+        $gudangUser->syncRoles([$adminGudang]);
 
-        $this->command->info('Roles & Users seeded successfully!');
-        $this->command->info('  superadmin -> admin@konveksipos.com / password');
-        $this->command->info('  kasir      -> kasir@konveksipos.com / password');
-        $this->command->info('  gudang     -> gudang@konveksipos.com / password');
+        $this->command->info('Roles & Permissions seeded successfully!');
     }
 }

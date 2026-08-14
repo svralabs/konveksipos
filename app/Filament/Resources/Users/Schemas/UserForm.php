@@ -30,7 +30,7 @@ class UserForm
                     ->helperText('Kosongkan jika tidak ingin mengubah password'),
                 Select::make('roles')
                     ->label('Role / Hak Akses')
-                    ->options(Role::pluck('name', 'name'))
+                    ->options(Role::pluck('name', 'name')->mapWithKeys(fn ($name) => [$name => str($name)->headline()->toString()]))
                     ->searchable()
                     ->required()
                     ->dehydrated(false)

@@ -5,10 +5,12 @@ namespace App\Filament\Pages;
 use App\Models\Order;
 use App\Models\Expense;
 use App\Livewire\GlobalHeader;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
 
 class ProfitLossReport extends Page
 {
+    use HasPageShield;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
     protected static string|\UnitEnum|null $navigationGroup = 'Laporan';
     protected static ?string $title = 'Laba Rugi (Profit & Loss)';
