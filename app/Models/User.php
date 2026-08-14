@@ -14,13 +14,20 @@ use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWallet;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements Wallet
+class User extends Authenticatable implements Wallet, FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasWallet, LogsActivity;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
