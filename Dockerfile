@@ -1,42 +1,40 @@
-# Stage 1: Build Frontend Assets
-FROM node:22-alpine AS frontend
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# Stage 2: Production FrankenPHP with PHP 8.4
 FROM dunglas/frankenphp:1-php8.4-bookworm
 
-# Install required PHP extensions for Laravel + Filament (intl, zip, gd, sqlite, etc.)
-RUN install-php-extensions \
-    pdo \
-    pdo_sqlite \
-    pdo_mysql \
-    intl \
-    zip \
-    gd \
-    bcmath \
-    exif \
-    pcntl \
-    opcache
+# Install Node.js 22 and required PHP extensions for Laravel + Filament
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs git unzip \
+    && install-php-extensions \
+        pdo \
+        pdo_sqlite \
+        pdo_mysql \
+        intl \
+        zip \
+        gd \
+        bcmath \
+        exif \
+        pcntl \
+        opcache
 
 WORKDIR /app
 
 # Copy Composer binary
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application source code
+# 1. Install PHP dependencies first (so Filament CSS in vendor/ is present for Vite)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# 2. Install NPM dependencies
+COPY package*.json ./
+RUN npm install
+
+# 3. Copy application source code
 COPY . .
 
-# Copy compiled assets from frontend stage
-COPY --from=frontend /app/public/build ./public/build
+# 4. Build Vite assets (now can access vendor/filament/filament CSS)
+RUN npm run build
 
-# Install PHP dependencies without dev packages
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Prepare directories, sqlite DB, and permissions
+# Prepare database directory, sqlite DB, and set permissions
 RUN mkdir -p database storage bootstrap/cache \
     && touch database/database.sqlite \
     && chown -R www-data:www-data /app \
